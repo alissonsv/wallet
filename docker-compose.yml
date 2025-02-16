@@ -1,0 +1,16 @@
+services:
+  find-a-friend-pg:
+    image: bitnami/postgresql
+    logging:
+      driver: none
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRESQL_USERNAME=docker
+      - POSTGRESQL_PASSWORD=docker
+      - POSTGRESQL_DATABASE=wallet
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "docker", "-d", "wallet"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
