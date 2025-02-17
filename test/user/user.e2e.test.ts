@@ -20,6 +20,7 @@ describe("UserController (e2e)", () => {
     prisma = app.get(PrismaService);
 
     await prisma.user.deleteMany();
+    await prisma.transaction.deleteMany();
   });
 
   describe("Create", () => {
