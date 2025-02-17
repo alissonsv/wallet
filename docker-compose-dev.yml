@@ -1,18 +1,4 @@
 services:
-  app:
-    build: .
-    ports: 
-      - 3000:3000
-    depends_on:
-      wallet-pg:
-        condition: service_healthy
-    environment:
-      - PORT=3000
-      - DATABASE_URL=postgresql://docker:docker@wallet-pg:5432/wallet?schema=public
-      - NODE_ENV=dev
-      - JWT_SECRET=JWT_SECRET
-    command: sh -c "npx prisma migrate deploy && node dist/main.js"
-
   wallet-pg:
     image: bitnami/postgresql
     logging:
