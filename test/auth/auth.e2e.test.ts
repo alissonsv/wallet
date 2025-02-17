@@ -24,7 +24,7 @@ describe("AuthController (e2e)", () => {
   });
 
   describe("Login", () => {
-    test("Should be able to login and get access_token", async () => {
+    test("Should be able to login and set jwt cookie", async () => {
       await request(app.getHttpServer()).post("/users").send({
         name: "John Doe",
         email: "johndoe@example.com",
@@ -38,9 +38,9 @@ describe("AuthController (e2e)", () => {
           password: "password123",
         });
 
-      expect(response.body).toEqual({
-        access_token: expect.any(String),
-      });
+      expect(response.get("Set-Cookie")).toEqual([
+        expect.stringContaining("jwt="),
+      ]);
     });
 
     test("Should return 401 if user does not exists", async () => {

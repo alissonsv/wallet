@@ -54,7 +54,7 @@ describe("UserService", () => {
   });
 
   describe("Create", () => {
-    test("Should create a new user and return user with a JWT token", async () => {
+    test("Should create a new user and return a JWT token", async () => {
       const dto = {
         name: "John Doe",
         email: "johndoe@example.com",
@@ -67,11 +67,6 @@ describe("UserService", () => {
       const result = await userService.create(dto);
 
       expect(result).toEqual({
-        user: {
-          ...mockUser,
-          balance: 100,
-          password: undefined,
-        },
         token: "mocked-jwt-token",
       });
     });

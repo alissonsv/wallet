@@ -1,17 +1,14 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { Prisma, User } from "@prisma/client";
-import { PrismaService } from "../prisma.service";
 import { UserService } from "../../src/user/user.service";
 import { AuthService } from "./auth.service";
 import { UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import * as argon2 from "argon2";
-import { JwtStrategy } from "./jwt.strategy";
 
 describe("Auth Service", () => {
   let authService: AuthService;
   let userService: UserService;
-  let jwtService: JwtService;
 
   const mockUser: User = {
     id: "123",

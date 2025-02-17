@@ -32,14 +32,10 @@ describe("UserController (e2e)", () => {
       });
 
       expect(response.statusCode).toBe(201);
-      expect(response.body).toEqual({
-        user: expect.objectContaining({
-          name: "John Doe",
-          email: "johndoe@example.com",
-          balance: expect.any(Number),
-        }),
-        token: expect.any(String),
-      });
+
+      expect(response.get("Set-Cookie")).toEqual([
+        expect.stringContaining("jwt="),
+      ]);
     });
 
     test("Should return 400 if given data is invalid", async () => {
@@ -84,16 +80,16 @@ describe("UserController (e2e)", () => {
 
   describe("FindById", () => {
     test("Should be able to grab an user", async () => {
-      const createUserResponse = await request(app.getHttpServer())
-        .post("/users")
-        .send({
-          name: "John Doe",
+      const createdUser = await prisma.user.create({
+        data: {
           email: "johndoe@example.com",
-          password: "password123",
-        });
+          name: "John Doe",
+          password: "hashedpassword",
+        },
+      });
 
       const response = await request(app.getHttpServer()).get(
-        `/users/${createUserResponse.body.user.id}`,
+        `/users/${createdUser.id}`,
       );
 
       expect(response.body).toEqual({
@@ -107,17 +103,15 @@ describe("UserController (e2e)", () => {
 
   describe("Delete", () => {
     test("Should be able to delete an user", async () => {
-      const createUserResponse = await request(app.getHttpServer())
-        .post("/users")
-        .send({
-          name: "John Doe",
+      const createdUser = await prisma.user.create({
+        data: {
           email: "johndoe@example.com",
-          password: "password123",
-        });
+          name: "John Doe",
+          password: "hashedpassword",
+        },
+      });
 
-      await request(app.getHttpServer()).delete(
-        `/users/${createUserResponse.body.user.id}`,
-      );
+      await request(app.getHttpServer()).delete(`/users/${createdUser.id}`);
 
       const response = await request(app.getHttpServer()).get("/users");
       expect(response.body).toHaveLength(0);

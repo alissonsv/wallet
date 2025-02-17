@@ -41,7 +41,6 @@ export class UserService {
     });
 
     return {
-      user: this.formatUser(user),
       token,
     };
   }
