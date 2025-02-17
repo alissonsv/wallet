@@ -5,6 +5,9 @@
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=for-the-badge&logo=docker&logoColor=white)
 
+[![Run Unit Tests](https://github.com/alissonsv/wallet/actions/workflows/run-unit-tests.yml/badge.svg)](https://github.com/alissonsv/wallet/actions/workflows/run-unit-tests.yml)
+[![Run E2E Tests](https://github.com/alissonsv/wallet/actions/workflows/run-e2e-tests.yml/badge.svg)](https://github.com/alissonsv/wallet/actions/workflows/run-e2e-tests.yml)
+
 > BackEnd de uma carteira financeira em que os usuários possam realizar transferência de saldo.
 
 ## Como rodar local:
