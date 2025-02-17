@@ -1,9 +1,9 @@
 import * as request from "supertest";
 import { INestApplication } from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
-import { UserModule } from "./../../src/user/user.module";
+import { UserModule } from "../../src/user/user.module";
 import { App } from "supertest/types";
-import { PrismaService } from "./../../src/prisma.service";
+import { PrismaService } from "../../src/prisma.service";
 
 describe("UserController (e2e)", () => {
   let app: INestApplication<App>;

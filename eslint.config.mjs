@@ -40,7 +40,7 @@ export default tseslint.config(
     }
   },
   {
-    files: ["src/**/*spec.ts", "test/**/*spec.ts"],
+    files: ["src/**/*spec.ts", "test/**/*test.ts"],
     rules: {
       "@typescript-eslint/no-unsafe-member-access": "off",
       "@typescript-eslint/no-unsafe-assignment": "off"
