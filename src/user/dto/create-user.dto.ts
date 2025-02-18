@@ -20,6 +20,6 @@ export class CreateUserSwaggerDto {
   @ApiProperty({ example: "password123", minLength: 6 })
   password: string;
 
-  @ApiProperty({ example: 0 })
+  @ApiProperty({ example: 0, required: false })
   balance?: number;
 }
