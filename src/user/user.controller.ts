@@ -7,11 +7,16 @@ import {
   BadRequestException,
   Delete,
   Res,
+  UseGuards,
+  Req,
+  UnauthorizedException,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { createUserSchema } from "./dto/create-user.dto";
 import { UserResponse } from "./types/user-response.type";
 import { Response } from "express";
+import { AuthGuard } from "@nestjs/passport";
+import { GetUserAuthRequest } from "./types/request.type";
 
 @Controller("users")
 export class UserController {
@@ -50,7 +55,14 @@ export class UserController {
   }
 
   @Delete(":id")
-  async delete(@Param("id") id: string): Promise<void> {
+  @UseGuards(AuthGuard("jwt"))
+  async delete(
+    @Param("id") id: string,
+    @Req() req: GetUserAuthRequest,
+  ): Promise<void> {
+    if (!(req.user.userId === id)) {
+      throw new UnauthorizedException();
+    }
     await this.userService.deleteById(id);
   }
 }

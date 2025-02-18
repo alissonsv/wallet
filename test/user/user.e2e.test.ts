@@ -4,6 +4,9 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { UserModule } from "../../src/user/user.module";
 import { App } from "supertest/types";
 import { PrismaService } from "../../src/prisma.service";
+import { loginAndReturnCookies } from "../utils/login-and-return-cookies";
+import { AuthModule } from "src/auth/auth.module";
+import * as cookieParser from "cookie-parser";
 
 describe("UserController (e2e)", () => {
   let app: INestApplication<App>;
@@ -11,10 +14,11 @@ describe("UserController (e2e)", () => {
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [UserModule],
+      imports: [UserModule, AuthModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.use(cookieParser());
     await app.init();
 
     prisma = app.get(PrismaService);
@@ -103,18 +107,31 @@ describe("UserController (e2e)", () => {
 
   describe("Delete", () => {
     test("Should be able to delete an user", async () => {
-      const createdUser = await prisma.user.create({
+      const { createdUser, cookies } = await loginAndReturnCookies(app, prisma);
+
+      await request(app.getHttpServer())
+        .delete(`/users/${createdUser.id}`)
+        .set("Cookie", cookies);
+
+      const response = await request(app.getHttpServer()).get("/users");
+      expect(response.body).toHaveLength(0);
+    });
+
+    test("Should return 401 if user is trying to delete another user than himself", async () => {
+      const anotherUserCreated = await prisma.user.create({
         data: {
-          email: "johndoe@example.com",
-          name: "John Doe",
+          email: "another_user@example.com",
+          name: "Another User",
           password: "hashedpassword",
         },
       });
 
-      await request(app.getHttpServer()).delete(`/users/${createdUser.id}`);
+      const { cookies } = await loginAndReturnCookies(app, prisma);
 
-      const response = await request(app.getHttpServer()).get("/users");
-      expect(response.body).toHaveLength(0);
+      await request(app.getHttpServer())
+        .delete(`/users/${anotherUserCreated.id}`)
+        .set("Cookie", cookies)
+        .expect(401);
     });
   });
 });
