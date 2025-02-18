@@ -7,8 +7,9 @@ import {
   Res,
 } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-import { loginSchema } from "./dto/login.dto";
+import { loginSchema, LoginSwaggerDto } from "./dto/login.dto";
 import { Response } from "express";
+import { ApiBody, ApiOperation } from "@nestjs/swagger";
 
 @Controller("auth")
 export class AuthController {
@@ -16,6 +17,8 @@ export class AuthController {
 
   @Post("login")
   @HttpCode(200)
+  @ApiOperation({ summary: "Login and store jwt as cookie" })
+  @ApiBody({ type: LoginSwaggerDto })
   async login(@Body() body: any, @Res() res: Response) {
     const parsedData = loginSchema.safeParse(body);
     if (!parsedData.success) {
@@ -36,6 +39,8 @@ export class AuthController {
   }
 
   @Post("logout")
+  @HttpCode(200)
+  @ApiOperation({ summary: "Logout cleaning jwt cookie" })
   logout(@Res() res: Response) {
     res.clearCookie("jwt");
     return res.status(200).json({ message: "Logged out successfully" });

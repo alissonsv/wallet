@@ -12,17 +12,26 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { UserService } from "./user.service";
-import { createUserSchema } from "./dto/create-user.dto";
+import { createUserSchema, CreateUserSwaggerDto } from "./dto/create-user.dto";
 import { UserResponse } from "./types/user-response.type";
 import { Response } from "express";
 import { AuthGuard } from "@nestjs/passport";
 import { GetUserAuthRequest } from "./types/request.type";
+import {
+  ApiBody,
+  ApiHeaders,
+  ApiOperation,
+  ApiResponse,
+} from "@nestjs/swagger";
 
 @Controller("users")
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @ApiBody({ type: CreateUserSwaggerDto })
+  @ApiOperation({ summary: "Creates an user" })
+  @ApiResponse({ status: 201, description: "User created successfully" })
   async create(@Body() body: any, @Res() res: Response) {
     const parsedData = createUserSchema.safeParse(body);
     if (!parsedData.success) {
@@ -43,11 +52,13 @@ export class UserController {
   }
 
   @Get()
+  @ApiOperation({ summary: "Get all users" })
   async findAll() {
     return this.userService.findAll();
   }
 
   @Get(":id")
+  @ApiOperation({ summary: "Get user by id" })
   async findById(
     @Param("id") id: string,
   ): Promise<{ user: UserResponse } | null> {
@@ -55,6 +66,7 @@ export class UserController {
   }
 
   @Delete(":id")
+  @ApiOperation({ summary: "Delete self user" })
   @UseGuards(AuthGuard("jwt"))
   async delete(
     @Param("id") id: string,
