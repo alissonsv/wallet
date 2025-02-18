@@ -59,6 +59,7 @@ describe("UserService", () => {
         name: "John Doe",
         email: "johndoe@example.com",
         password: "password123",
+        balance: 0,
       };
 
       jest.spyOn(prisma.user, "findUnique").mockResolvedValueOnce(null);
